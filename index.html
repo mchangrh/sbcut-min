@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<head>
+  <style>
+    body, input, pre {
+      background: rgb(17, 17, 17);
+      color: rgb(221, 221, 221);
+    }
+  </style>
+</head>
+<body>
+  <input type="text" id="segments">
+  <button onclick="rinse()">Clean</button>
+  <pre id="cleaned"></pre>
+  <script>
+    const rinse = () => {
+      const url = document.getElementById('segments').value
+      const cleaned = cleanup(url)
+      document.getElementById('cleaned').innerText = cleaned
+      navigator.clipboard.writeText(cleaned);
+    }
+    const cleanup = (url) => {
+      const [ base, segments ] = url.split('#segments=')
+      const cleaned = JSON.parse(segments).map((segment) => {
+        const res = {}
+        if (segment.actionType != "skip") res.actionType = segment.actionType
+        res.segment = segment.segment.map(time => time.toFixed(3))
+        return res
+      })
+      return `${base}#segments=${JSON.stringify(cleaned)}`
+    }
+  </script>
+</body>
